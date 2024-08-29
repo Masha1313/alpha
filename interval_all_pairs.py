@@ -38,6 +38,7 @@ def calculate_bootstrapped_alpha(units_dict, D_e, num_samples=100, p_value=0.1,
         for unit, answers in units_dict.items():
             num_observers = len(answers)
             num_pairs = num_observers * (num_observers - 1) // 2
+            #берем рандомную пару
             pair_indices = sample(range(N_0), num_pairs)
 
             for i in range(num_pairs):
@@ -76,10 +77,10 @@ def calculate_bootstrapped_alpha(units_dict, D_e, num_samples=100, p_value=0.1,
 
     return {'confidence_interval': (alpha_smallest, alpha_largest)}
 
-df = pd.read_csv('crowd_labels.tsv', sep='\t', names=['worker', 'task', 'answer'])
+df = pd.read_csv('small.tsv', sep='\t', names=['worker', 'task', 'answer'])
 
 tasks_dict = create_task_answer_dict(df)
 
-result = calculate_bootstrapped_alpha(tasks_dict, 0.485570550804453)
+result = calculate_bootstrapped_alpha(tasks_dict, 0.4796444639525952)
 print("confidence interval:", result['confidence_interval'])
-#alpha=0.261920..
+# crowd_labels: alpha=0.2619204046699479 D_e=0.485570550804453 D_o=0.35838971564194116

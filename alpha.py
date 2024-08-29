@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-df = pd.read_csv('crowd_labels.tsv', sep='\t', names=['worker', 'task', 'answer'])
+df = pd.read_csv('small.tsv', sep='\t', names=['worker', 'task', 'answer'])
 data_matrix1 = pd.pivot_table(df, index='task', columns='worker', values='answer')
 
 
