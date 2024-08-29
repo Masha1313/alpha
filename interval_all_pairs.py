@@ -2,6 +2,7 @@ import numpy as np
 import itertools
 from tqdm import tqdm
 import pandas as pd
+from random import sample
 
 #создаем хэш таблицу из файла без нан значений
 def create_task_answer_dict(df):
@@ -36,12 +37,11 @@ def calculate_bootstrapped_alpha(units_dict, D_e, num_samples=100, p_value=0.1,
         alpha = 1.0
         for unit, answers in units_dict.items():
             num_observers = len(answers)
-            num_pairs = len(answers) * (len(answers) - 1) // 2
-             #берем рандомные пары
-            r_pairs_indices = np.random.choice(np.arange(N_0), num_pairs, replace=False)
+            num_pairs = num_observers * (num_observers - 1) // 2
+            pair_indices = sample(range(N_0), num_pairs)
 
             for i in range(num_pairs):
-                pair = pairs[r_pairs_indices[i]]
+                pair = pairs[pair_indices[i]]
                 E_r = 2 * metric(pair) / (N_dot * D_e)
                 alpha -= E_r / (num_observers - 1)
 
@@ -82,3 +82,4 @@ tasks_dict = create_task_answer_dict(df)
 
 result = calculate_bootstrapped_alpha(tasks_dict, 0.485570550804453)
 print("confidence interval:", result['confidence_interval'])
+#alpha=0.261920..

@@ -3,6 +3,7 @@ import itertools
 from tqdm import tqdm
 import pandas as pd
 
+
 def create_task_answer_dict(df):
     units_dict = {}
 
@@ -12,6 +13,7 @@ def create_task_answer_dict(df):
             units_dict[unit] = answers
 
     return units_dict
+
 
 def calculate_bootstrapped_alpha(units_dict, D_e, num_samples=100, p_value=0.05,
                                  metric=lambda pair: 0 if pair[0] == pair[1] else 1):
@@ -34,7 +36,7 @@ def calculate_bootstrapped_alpha(units_dict, D_e, num_samples=100, p_value=0.05,
 
         alpha_key = int(np.ceil(alpha * (10 ** num_dig)))
         if alpha < -1:
-            alpha_key = -10**num_dig
+            alpha_key = -10 ** num_dig
 
         alpha_dict[alpha_key] = alpha_dict.get(alpha_key, 0) + 1
 
@@ -60,6 +62,7 @@ def calculate_bootstrapped_alpha(units_dict, D_e, num_samples=100, p_value=0.05,
             break
 
     return {'confidence_interval': (alpha_smallest, alpha_largest)}
+
 
 df = pd.read_csv('crowd_labels.tsv', sep='\t', names=['worker', 'task', 'answer'])
 
