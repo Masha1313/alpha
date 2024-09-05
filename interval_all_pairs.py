@@ -21,14 +21,13 @@ def ordinal_distance(label1: int, label2: int) -> float:
     return (sum([g for g in range(label1, label2 + 1)]) - (label1 + label2) / 2) ** 2
 
 
-# 2 и 4: (2+3+4+5-3 )** 2=121
-
+#metric=lambda pair: 0 if pair[0] == pair[1] else 1
 
 def calculate_bootstrapped_alpha(
         units_dict: Dict[str, List[str]],
         D_e: float,
         num_samples: int = 100,
-        p_value: float = 0.1) -> Dict[str, Tuple[float, float]]:
+        p_value: float = 0.05) -> Dict[str, Tuple[float, float]]:
     num_dig: int = len(str(num_samples))
     # Хэш таблица с альфами
     alpha_dict: Dict[int, int] = {}
@@ -45,6 +44,8 @@ def calculate_bootstrapped_alpha(
         unit_pairs = list(itertools.combinations(answers, 2))
         pairs.extend(unit_pairs)
 
+    errors: List[float] = [2 * ordinal_distance(int(pair[0]), int(pair[1])) / (N_dot * D_e) for pair in pairs]
+
     for _ in tqdm(range(num_samples), ncols=80, desc='Progress'):
         alpha: float = 1.0
         for unit, answers in units_dict.items():
@@ -54,10 +55,8 @@ def calculate_bootstrapped_alpha(
             pair_indices: List[int] = sample(range(N_0), num_pairs)
 
             for i in range(num_pairs):
-                pair: Tuple[str, str] = pairs[pair_indices[i]]
-                E_r: float = 2 * ordinal_distance(int(pair[0]), int(pair[1])) / (N_dot * D_e)
-
-                alpha -= E_r / (num_observers - 1)
+                r: int = pair_indices[i]
+                alpha -= errors[r] / (num_observers - 1)
 
         alpha_key: int = int(np.ceil(alpha * (10 ** num_dig)))
         if alpha < -1:
@@ -99,3 +98,4 @@ tasks_dict: Dict[str, List[str]] = create_task_answer_dict(df)
 result: Dict[str, Tuple[float, float]] = calculate_bootstrapped_alpha(tasks_dict, 0.6812007463452742)
 print("confidence interval:", result['confidence_interval'])
 # alpha crowd_labels5 = 0.5389072914137769, D_e= 0.6812007463452742
+
