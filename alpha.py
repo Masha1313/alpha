@@ -8,6 +8,7 @@ data_matrix1 = pd.pivot_table(df, index='task', columns='worker', values='answer
 data_matrix2 = pd.read_csv('m-transformed.tsv', sep='\t', header=None)
 
 
+
 def alpha(data_matrix):
     n_items = len(data_matrix)
     max_rate = int(np.max(data_matrix) + 1)

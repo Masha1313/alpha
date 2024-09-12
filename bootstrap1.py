@@ -5,7 +5,7 @@ from tqdm import tqdm
 import numpy as np
 from nltk.metrics.agreement import AnnotationTask
 
-df = pd.read_csv('crowd_labels.tsv', sep='\t', names=['worker', 'task', 'answer'])
+df = pd.read_csv('m-transformed.tsv', sep='\t', names=['worker', 'task', 'answer'])
 
 task = AnnotationTask(data=df.itertuples(index=False))
 print(task.alpha())
@@ -14,7 +14,7 @@ def bootstrap(data, num_samples=5000, p=0.05):
     bootstrap_alpha = []
     num_rows, num_cols = data.shape
     for _ in tqdm(range(num_samples), ncols=80, desc='Progress'):
-        resample_indices = np.random.choice(num_rows, 2000, replace=False)
+        resample_indices = np.random.choice(num_rows, 200, replace=False)
         resample_data = data[resample_indices, :]
         resample_alpha = AnnotationTask(data=resample_data).alpha()
         bootstrap_alpha.append(resample_alpha)
