@@ -1,13 +1,11 @@
 import numpy as np
 import pandas as pd
-
+import jsonl
 
 df = pd.read_csv('small.tsv', sep='\t', names=['worker', 'task', 'answer'])
 data_matrix1 = pd.pivot_table(df, index='task', columns='worker', values='answer')
 
 data_matrix2 = pd.read_csv('m-transformed.tsv', sep='\t', header=None)
-
-
 
 def alpha(data_matrix):
     n_items = len(data_matrix)
@@ -51,6 +49,7 @@ data_test = pd.DataFrame([
     [0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
     [1, 1, 1, 0, 0, 1, 0, 0, 0, 0]
 ])
-# print(alpha(data_test.T))
+#print(data_test.T)
+#print(alpha(data_test.T))
 # print(alpha(data_matrix1))
-print(alpha(data_matrix2))
+print(alpha(jsonl.annot_matrix))
