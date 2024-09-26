@@ -8,7 +8,7 @@ import jsonl
 from jsonl import units_dict
 
 def metric(label1: int, label2: int) -> float:
-   return (sum([g for g in range(label1, label2 + 1)]) - (label1 + label2) / 2) ** 2
+   return (sum([g for g in range(min(label1, label2 ), max(label1, label2)+1)]) - (label1 + label2) / 2) ** 2
 def calculate_bootstrapped_alpha(
         units_dict: Dict[str, List[int]],
         D_e: float,
@@ -29,19 +29,21 @@ def calculate_bootstrapped_alpha(
     errors_dict: Dict[str, List[float]] = {}
     # Массив всех возможных пар
     pairs: List[Tuple[str, str]] = []
-
+    print(N_dot * D_e)
     for unit, answers in units_dict.items():
         unit_pairs = list(itertools.combinations(answers, 2))
 
-        unit_errors: List[float] = [round( 2 * metric(pair[0], pair[1]) / (N_dot * D_e), 3) for pair in unit_pairs]
+        unit_errors: List[float] = [round( 2 * metric(pair[0], pair[1]) / (N_dot * D_e), 4) for pair in unit_pairs]
 
         sum_errors = round(sum(unit_errors), 3)
 
-        errors_dict[unit] = {'errors': unit_errors, 'sum': sum_errors}
+        errors_dict[unit] = {'errors': unit_errors, 'sum': sum_errors, 'values': answers}
 
         sorted_errors_dict = dict(sorted(errors_dict.items(), key=lambda item: item[1]['sum'], reverse=True))
 
+
+
     for unit, data in sorted_errors_dict.items():
-        print( f"{unit}, Sum: {data['sum']}, Errors: {data['errors']}")
+        print( f"{unit}:{data['values']}, Errors: {data['errors']} , Sum: {data['sum']}")
 
 result: Dict[str, Tuple[float, float]] = calculate_bootstrapped_alpha(units_dict,  0.575)
